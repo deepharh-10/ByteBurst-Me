@@ -32,15 +32,100 @@ enum SEX {
   FEMALE
 }
 
+enum ROLE {
+  admin
+  user
+}
+
 model User {
-  id         String  @id @default(nanoid())
-  username   String?
-  name       String
-  roll       String  @unique
-  email      String  @unique
-  password   String
-  dept       DEPT?
-  year       YEAR?
-  sex        SEX?
-  whatsAppNo String?
+  id              String   @id @default(cuid())
+  username        String? // manually created
+  name            String
+  roll            String   @unique
+  email           String   @unique
+  password        String // hashed
+  dept            DEPT?
+  year            YEAR?
+  sex             SEX?
+  whatsAppNo      String?
+  role            ROLE     @default(user)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+  isActive        Boolean  @default(false)
+  ifEmailVerified Boolean  @default(false)
+
+  sessions      Session[]
+  otps          OTP[]
+  registrations Registration[]
+
+  @@index([roll])
+  @@map("user")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  refreshToken String
+  createdAt    DateTime @default(now())
+  ipAddress    String?
+  userAgent    String?
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId       String
+
+  @@unique([refreshToken])
+  @@index([userId])
+  @@map("session")
+}
+
+model OTP {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  code      String // hased OTP
+  expiresAt DateTime
+  createdAt DateTime @default(now())
+
+  @@index([userId, code])
+  @@map("otp")
+}
+
+model Event {
+  id          String  @id @default(cuid())
+  category    String // 'Hackathon' , 'CSS Warriors' ..
+  isTeamEvent Boolean @default(false)
+
+  registrations Registration[]
+  teams         Team[]
+
+  @@map("event")
+}
+
+model Registration {
+  id        String   @id @default(cuid())
+  userId    String
+  eventId   String
+  createdAt DateTime @default(now())
+  teamId    String?
+
+  user  User  @relation(fields: [userId], references: [id])
+  event Event @relation(fields: [eventId], references: [id])
+  team  Team? @relation(fields: [teamId], references: [id])
+
+  projectSubmissionLink String?
+
+  @@unique([userId, eventId])
+  @@map("registration")
+}
+
+model Team {
+  id       String @id @default(cuid())
+  teamName String
+  eventId  String
+
+  event   Event          @relation(fields: [eventId], references: [id])
+  members Registration[]
+
+  createdAt DateTime @default(now())
+
+  @@unique([teamName, eventId])
+  @@map("team")
 }
