@@ -1,85 +1,46 @@
-import { useRef, useEffect } from "react";
+import {Routes, Route} from "react-router-dom"
+import Home from "./pages/Home.jsx"
+import Login from "./pages/Login.jsx"
+import SignUp from "./pages/SignUp.jsx"
+import UserProfile from "./pages/UserProfile.jsx"
+import AboutPage from "./pages/AboutPage.jsx"
+import Developer from "./pages/Developer.jsx"
+import OrganigerCommitee from "./pages/OrganigerCommitee.jsx"
+import VerifyOtp from "./pages/VerifyOtp.jsx"
+
+import Autocad2DAnd3D from "./pages/events/Autocad2DAnd3D.jsx"
+import BugBomty from "./pages/events/BugBomty.jsx"
+import CodeAThon from "./pages/events/CodeAThon.jsx"
+import CssWarriors from "./pages/events/CssWarriors.jsx"
+import GraphiesDesign from "./pages/events/GraphiesDesign.jsx"
+import PromptEngineering from "./pages/events/PromptEngineering.jsx"
+import TechAndAptiQuiz from "./pages/events/TechAndAptiQuiz.jsx"
+import TechExhibition from "./pages/events/TechExhibition.jsx"
+import TechnoCommercial from "./pages/events/TechnoCommercial.jsx"
 
 export default function App() {
-  const cursorRef = useRef(null);
-  const ringRef = useRef(null);
-
-  useEffect(() => {
-    let mx = 0, my = 0; // mouse position
-    let rx = 0, ry = 0; // ring position
-
-    const moveHandler = (e) => {
-      mx = e.clientX;
-      my = e.clientY;
-
-      if (cursorRef.current) {
-        cursorRef.current.style.transform = `translate(${mx}px, ${my}px) translate(-50%, -50%)`;
-      }
-    };
-
-    document.addEventListener("mousemove", moveHandler);
-
-    const animateRing = () => {
-      rx += (mx - rx) * 0.12;
-      ry += (my - ry) * 0.12;
-
-      if (ringRef.current) {
-        ringRef.current.style.transform = `translate(${rx}px, ${ry}px) translate(-50%, -50%)`;
-      }
-
-      requestAnimationFrame(animateRing);
-    };
-
-    animateRing();
-
-    // Hover effects
-    const hoverElements = document.querySelectorAll(
-      "a, button, .comp-card, .sponsor-logo"
-    );
-
-    const handleEnter = () => {
-      if (ringRef.current && cursorRef.current) {
-        ringRef.current.style.width = "60px";
-        ringRef.current.style.height = "60px";
-        ringRef.current.style.opacity = "0.3";
-        cursorRef.current.style.transform = "translate(-50%,-50%) scale(1.5)";
-      }
-    };
-
-    const handleLeave = () => {
-      if (ringRef.current && cursorRef.current) {
-        ringRef.current.style.width = "36px";
-        ringRef.current.style.height = "36px";
-        ringRef.current.style.opacity = "0.5";
-        cursorRef.current.style.transform = cursorRef.current.style.transform.replace(
-          "translate(-50%,-50%) scale(1)",
-          ""
-        );
-      }
-    };
-
-    hoverElements.forEach((el) => {
-      el.addEventListener("mouseenter", handleEnter);
-      el.addEventListener("mouseleave", handleLeave);
-    });
-
-    // Cleanup 🧹
-    return () => {
-      document.removeEventListener("mousemove", moveHandler);
-      hoverElements.forEach((el) => {
-        el.removeEventListener("mouseenter", handleEnter);
-        el.removeEventListener("mouseleave", handleLeave);
-      });
-    };
-  }, []);
-
   return (
-    <>
-      <div ref={cursorRef} className="cursor"></div>
-      <div ref={ringRef} className="cursor-ring"></div>
+    <div>
+      <Routes>
+        <Route path="" element={<Home/>}/>
+        <Route path="/login" element={<Login/>}/>
+        <Route path="/signUp" element={<SignUp/>}/>
+        <Route path="/user-profile" element={<UserProfile/>}/>
+        <Route path="/about-page" element={<AboutPage/>}/>
+        <Route path="/developer" element={<Developer/>}/>
+        <Route path="/organiger-commitee" element={<OrganigerCommitee/>}/>
+        <Route path="/verifyOtp" element={<VerifyOtp/>}/>
 
-        <div className="grid-bg"></div>
-
-    </>
-  );
+        <Route path="/autocad" element={<Autocad2DAnd3D/>}/>
+        <Route path="/bug-bomty" element={<BugBomty/>}/>
+        <Route path="/code-a-thon" element={<CodeAThon/>}/>
+        <Route path="/css-warriors" element={<CssWarriors/>}/>
+        <Route path="/graphies-design" element={<GraphiesDesign/>}/>
+        <Route path="/prompt-engineering" element={<PromptEngineering/>}/>
+        <Route path="/tech-apti" element={<TechAndAptiQuiz/>}/>
+        <Route path="/tech-exhibition" element={<TechExhibition/>}/>
+        <Route path="/techno-commercial" element={<TechnoCommercial/>}/>
+      </Routes>
+    </div>
+  )
 }
