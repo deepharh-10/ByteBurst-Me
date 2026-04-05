@@ -58,6 +58,7 @@ model User {
   otps          OTP[]
   registrations Registration[]
 
+  @@unique([email, roll])
   @@index([roll])
   @@map("user")
 }
